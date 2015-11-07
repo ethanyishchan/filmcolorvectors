@@ -15,7 +15,7 @@ for i = 1:Num
     avg = squeeze(mean(mean(img)));
     featVect(:,i) = avg;
     patch([i-1 i-1 i i], [-1 1 1 -1], 'r', 'facecolor', ...
-        min(2*(avg'./(2^8)), 1));
+        min(2*(avg'./(2^8)), 1), 'edgecolor', 'none');
 end
 axis([0,Num,-1,1]);
 set(gca,'position',[0 0 1 1],'units','normalized')
