@@ -1,5 +1,7 @@
 % averagingFramesBatch.m - Script to find the average color for each 
-%                          extracted frame in the movie.
+%                          extracted frame in the movie. Runs through
+%                          a folders to generate the feature vectors for
+%                          those movies.
 % CS229 Final Project
 % Ethan Chan, Rajashi Roy, John Lee
 % {ethancys,rroy,johnwlee}@stanford.edu
