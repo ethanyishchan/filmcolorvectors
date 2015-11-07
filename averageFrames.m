@@ -20,4 +20,5 @@ end
 axis([0,Num,-1,1]);
 set(gca,'position',[0 0 1 1],'units','normalized')
 cd('..');
-print('-dpng', 'whiplash.png');
+dlmwrite([movName, '.txt'],featVect', ' ');
+print('-dpng', [movName, '.png']);
