@@ -33,7 +33,7 @@ for i = 1:length(D)
         movieNames(movNum) = cellstr(movName);
         temp = reshape(featVectStdLen', 3*numSamples, 1);
         temp = temp*temp';
-        X(movNum,:) = reshape(temp, (3*numSamples)^2, 1);
+        X(movNum,:) = reshape(temp, (3*numSamples);
         movNum = movNum + 1;
     end
 end
