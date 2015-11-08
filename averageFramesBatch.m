@@ -16,7 +16,7 @@ for i = 1:length(D)
         cd(movName);
         featVect = zeros(3, numFrame);
         for j = 1:numFrame
-            img = imread(sprintf('img%03d.jpg', j));
+            img = imread(sprintf('%03d.jpg', j));
             avg = squeeze(mean(mean(img)));
             featVect(:,j) = avg;
             patch([j-1 j-1 j j], [-1 1 1 -1], 'r', 'facecolor', ...
