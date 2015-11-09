@@ -13,7 +13,7 @@
 % {ethancys,rroy,johnwlee}@stanford.edu
 % Created: November 7th 2015
 
-directoryName = 'movie_pictures';
+directoryName = 'movie_pictures/';
 for j = 1:k
     figure;
     currentCounter = 1;
