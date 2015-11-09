@@ -1,13 +1,7 @@
 % displayClustering.m - Script to display the different clusters determined
 %                       by k-means. The script draws the visualization
-%                       vector of each cluster on 1 plot, allowing visual
-%                       comparison of the clusters.
-%                       
-%                       Note: Assumes that kMeans was run immediately
-%                       before this script is run. (i.e. variables "idx",
-%                       "k", "movieNames", etc) is already loaded in
-%                       workspace.
-%                       
+%                       vector o
+%            obtained from movies.
 % CS229 Final Project
 % Ethan Chan, Rajashi Roy, John Lee
 % {ethancys,rroy,johnwlee}@stanford.edu
