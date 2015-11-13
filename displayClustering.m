@@ -27,7 +27,7 @@ for j = 1:k
         img = imread(imgName{1});
         subplot(spDim, spDim, i);
         imshow(img);
-        title(movieNames(currentCounter));
+        title(movieNames{currentCounter}(1:min(length(movieNames{currentCounter}),20)));
         currentCounter = currentCounter + 1;
     end
 end

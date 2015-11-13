@@ -5,7 +5,7 @@
 % {ethancys,rroy,johnwlee}@stanford.edu
 % Created: November 12th 2015
 
-numSamples = 200;
+numSamples = 20;
 class1Dirs = {'movie_categories/horror'};
 class2Dirs = {'movie_categories/action'; 'movie_categories/animation'; ...
     'movie_categories/everything_else'; 'movie_categories/romance'};
@@ -64,22 +64,37 @@ end
 
 Y = not(Y-1); % Shifting labels to be 1 if horror, 0 otherwise
 %%
-trainOn = 0.9; % of total data
-testResults  = zeros(100,5);
-trainResults = zeros(100,5);
-for n = 1:100
-    P = randperm(sum(numMovies));
-    Xtrain = X(P(1:round(trainOn*sum(numMovies))),:);
-    Ytrain = Y(P(1:round(trainOn*sum(numMovies))),:);
-    Xtest  = X(P(1+round(trainOn*sum(numMovies)):end),:);
-    Ytest  = Y(P(1+round(trainOn*sum(numMovies)):end),:);
-    model  = fitcsvm(Xtrain,Ytrain, 'KernelFunction', 'linear');
-%     model  = fitcsvm(Xtrain,Ytrain, 'KernelFunction', 'polynomial', ...
-%         'PolynomialOrder', 3);
-    Y_hat  = predict(model, Xtest);
-    testResults(n,:) = [sum(Ytest) sum(Y_hat) sum(Ytest-Y_hat==1) ...
-        sum(Ytest-Y_hat == -1) sum(abs(Ytest-Y_hat))/size(Ytest,1)];
-    Y_ep   = predict(model, Xtrain);
-    trainResults(n,:) = [sum(Ytrain) sum(Y_ep) sum(Ytrain-Y_ep==1) ...
-        sum(Ytrain-Y_ep == -1) sum(abs(Ytrain-Y_ep))/size(Ytrain,1)];
+trainOnArray = 0.1:0.1:0.9;
+avgTrainError = zeros(1,9);
+avgTestError  = zeros(1,9);
+for i = 1:length(trainOnArray) % of total data
+    trainOn = trainOnArray(i);
+    testResults  = zeros(100,5);
+    trainResults = zeros(100,5);
+    for n = 1:100
+        P = randperm(sum(numMovies));
+        Xtrain = X(P(1:round(trainOn*sum(numMovies))),:);
+        Ytrain = Y(P(1:round(trainOn*sum(numMovies))),:);
+        Xtest  = X(P(1+round(trainOn*sum(numMovies)):end),:);
+        Ytest  = Y(P(1+round(trainOn*sum(numMovies)):end),:);
+        model  = fitcsvm(Xtrain,Ytrain, 'KernelFunction', 'linear', 'BoxConstraint', 1000);
+    %     model  = fitcsvm(Xtrain,Ytrain, 'KernelFunction', 'polynomial', ...
+    %         'PolynomialOrder', 3);
+        Y_hat  = predict(model, Xtest);
+        testResults(n,:) = [sum(Ytest) sum(Y_hat) sum(Ytest-Y_hat==1) ...
+            sum(Ytest-Y_hat == -1) sum(abs(Ytest-Y_hat))/size(Ytest,1)];
+        Y_ep   = predict(model, Xtrain);
+        trainResults(n,:) = [sum(Ytrain) sum(Y_ep) sum(Ytrain-Y_ep==1) ...
+            sum(Ytrain-Y_ep == -1) sum(abs(Ytrain-Y_ep))/size(Ytrain,1)];
+    end
+    avgTrainError(i) = mean(trainResults(:,5));
+    avgTestError(i)  = mean(testResults(:,5));
 end
+clf;
+hold on;
+m = round(sum(numMovies)*trainOnArray);
+plot(m, avgTrainError);
+plot(m, avgTestError);
+xlabel('Number of Training Examples (m)')
+legend('Training Error', 'GeneralizationError');
+% print('-dpng', 'errorsFigure.png');

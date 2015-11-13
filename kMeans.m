@@ -7,9 +7,11 @@
 
 %% Script Parameters
 numSamples = 200;
-k = 4;
-dataDirs = {'movie_vectors'; 'movie_vectors_2'};
-
+k = 7;
+dataDirs = {'movie_categories/horror'; 'movie_categories/action'; ...
+    'movie_categories/animation'; 'movie_categories/everything_else'; ...
+    'movie_categories/romance'};
+baseDir  = pwd;
 %% Counting the number of datapoints available
 numMovies = 0;
 for d = 1:size(dataDirs, 1)
@@ -21,7 +23,7 @@ for d = 1:size(dataDirs, 1)
             numMovies = numMovies + 1;
         end
     end
-    cd('..');
+    cd(baseDir);
 end
 
 %% Loading feature vectors into matlab, resampling to ensure uniform length
@@ -45,7 +47,7 @@ for d = 1:size(dataDirs, 1)
             movNum = movNum + 1;
         end
     end
-    cd('..');
+    cd(baseDir);
 end
 
 idx = kmeans(X, k);
