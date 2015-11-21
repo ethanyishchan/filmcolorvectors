@@ -3,7 +3,6 @@ Instructions on how to use this damn thing:
 1) Copy code to processing IDE
 2) Save
 3) Output vectors will be produced at the Save folder as "out.txt"
-
 FOR EACH MOVIE:
 4) Open up movie in Netflix
 5) Enter Length Of Movie in Below:
@@ -46,6 +45,22 @@ int bry=0; //snap of bottom-right  MOUSEY
 float tlxf=0; //snap of top-left MOUSEX
 float brxf=0; //snap of top-left MOUSEY
 
+// length of movie:
+int hr=2;
+int min=19;
+int sec=43;
+// calibration variable to tune based on width of browser:
+float calibration = 8900;
+
+// screen resolution:
+int screenresx=1440;
+int screenresy=900;
+
+// is used to stop the capture at the end of the movie based on the length of the movie
+int counter=0;
+int maxCounter=(hr*3600+min*60+sec)/10;
+
+
 void setup()
 {
   size(400, 400); //window size (doesn't matter)
@@ -70,7 +85,7 @@ void draw()
 {
   if(presses<1)println("Click on bottom-left corner");
   else if(presses<2) println("Click on top-right corner");
-  else if(!focused){
+  else if((!focused) && (counter < maxCounter)){
     int pixel; //ARGB variable with 32 int bytes where
     //sets of 8 bytes are: Alpha, Red, Green, Blue
     float r=0;
@@ -78,8 +93,7 @@ void draw()
     float b=0;
 
     //get screenshot into object "screenshot" of class BufferedImage
-    BufferedImage screenshot = robby.createScreenCapture(new Rectangle(new Dimension(1920,1080)));
-    //1440*900 is the screen resolution
+    BufferedImage screenshot = robby.createScreenCapture(new Rectangle(new Dimension(screenresx,screenresy)));
 
     println((brx-tlx)+" "+(bry-tly));
 
@@ -109,17 +123,15 @@ void draw()
     // Append to file
     appendTextToFile(outFilename, r+" "+g+" "+b);
     
-    
     // Select next keyframe and update window
     robby.keyPress(KeyEvent.VK_RIGHT);
-    int hr=1;
-    int min=25;
-    int sec=32;
-    float inc=14432.6/(hr*3600+min*60+sec);  // Denominator = length of movie(s)/10. eg: forerstgump:854
+
+    float inc=calibration/(hr*3600+min*60+sec);  // Denominator = length of movie(s)/10. eg: forerstgump:854
     tlxf += inc;
     brxf += inc;   
     tlx = int(tlxf);
     brx = int(brxf);
+    counter++;
   }
 }
 
