@@ -34,7 +34,7 @@ import java.awt.Dimension;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-String outFilename = "out.txt";
+
 Point mousepointer;
 Robot robby; //creates object "robby" of robot class
 int presses=0; //number of clicks since start of movie
@@ -46,11 +46,15 @@ float tlxf=0; //snap of top-left MOUSEX
 float brxf=0; //snap of top-left MOUSEY
 
 // length of movie:
-int hr=2;
-int min=19;
-int sec=43;
+int hr=1;
+int min=32;
+int sec=01;
 // calibration variable to tune based on width of browser:
-float calibration = 8900;
+float calibration = 9100;
+// file name
+String movieName = "PenguinsOfMadagascar";
+String outFilename = movieName + ".txt";
+int frameNo = 0;
 
 // screen resolution:
 int screenresx=1440;
@@ -64,6 +68,7 @@ int maxCounter=(hr*3600+min*60+sec)/10;
 void setup()
 {
   size(400, 400); //window size (doesn't matter)
+  frame.setResizable(true);
   try //standard Robot class error check
   {
     robby = new Robot();
@@ -86,6 +91,9 @@ void draw()
   if(presses<1)println("Click on bottom-left corner");
   else if(presses<2) println("Click on top-right corner");
   else if((!focused) && (counter < maxCounter)){
+    if (counter == 0) {
+      surface.setSize(brx-tlx, bry-tly);
+    }
     int pixel; //ARGB variable with 32 int bytes where
     //sets of 8 bytes are: Alpha, Red, Green, Blue
     float r=0;
@@ -119,6 +127,8 @@ void draw()
     screenshot.getRGB(tlx, tly, pshot.width, pshot.height, pshot.pixels, 0, pshot.width);
     pshot.updatePixels();
     image(pshot, 0, 0);
+    saveFrame(movieName + "/" + nf(frameNo,5) + ".tif");
+    frameNo ++;
     
     // Append to file
     appendTextToFile(outFilename, r+" "+g+" "+b);
