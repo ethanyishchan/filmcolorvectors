@@ -42,17 +42,17 @@ int tlx=0; //snap of top-left MOUSEX
 int tly=0; //snap of top-left MOUSEY
 int brx=0; //snap of bottom-right MOUSEX
 int bry=0; //snap of bottom-right  MOUSEY
-float tlxf=0; //snap of top-left MOUSEX
-float brxf=0; //snap of top-left MOUSEY
+float tlxf=tlx; //snap of top-left MOUSEX
+float brxf=brx; //snap of top-left MOUSEY
 
 // length of movie:
 int hr=1;
-int min=32;
-int sec=01;
+int min=31;
+int sec=50;
 // calibration variable to tune based on width of browser:
 float calibration = 9100;
 // file name
-String movieName = "PenguinsOfMadagascar";
+String movieName = "TadTheLostExplorer";
 String outFilename = movieName + ".txt";
 int frameNo = 0;
 
@@ -67,7 +67,7 @@ int maxCounter=(hr*3600+min*60+sec)/10;
 
 void setup()
 {
-  size(400, 400); //window size (doesn't matter)
+  size(250, 250); //window size (doesn't matter)
   frame.setResizable(true);
   try //standard Robot class error check
   {
@@ -92,7 +92,7 @@ void draw()
   else if(presses<2) println("Click on top-right corner");
   else if((!focused) && (counter < maxCounter)){
     if (counter == 0) {
-      surface.setSize(brx-tlx, bry-tly);
+      frame.setSize(brx-tlx, bry-tly);
     }
     int pixel; //ARGB variable with 32 int bytes where
     //sets of 8 bytes are: Alpha, Red, Green, Blue
@@ -123,11 +123,12 @@ void draw()
 
     // Debug output
     background(r,g,b); //make window background average color
-    PImage pshot = new PImage(brx-tlx, bry-tly, PConstants.ARGB);
+    //PImage pshot = new PImage(brx-tlx, bry-tly, PConstants.ARGB);
+    PImage pshot = createImage(brx-tlx, bry-tly, ARGB);
     screenshot.getRGB(tlx, tly, pshot.width, pshot.height, pshot.pixels, 0, pshot.width);
     pshot.updatePixels();
     image(pshot, 0, 0);
-    saveFrame(movieName + "/" + nf(frameNo,5) + ".tif");
+    pshot.save(movieName + "/" + nf(frameNo,5) + ".tif");
     frameNo ++;
     
     // Append to file
