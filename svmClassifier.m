@@ -5,7 +5,7 @@
 % {ethancys,rroy,johnwlee}@stanford.edu
 % Created: November 12th 2015
 
-numSamples = 20;
+numSamples = 200;
 class1Dirs = {'movie_categories/horror'};
 class2Dirs = {'movie_categories/action'; 'movie_categories/animation'; ...
     'movie_categories/everything_else'; 'movie_categories/romance'};
@@ -71,13 +71,13 @@ for i = 1:length(trainOnArray) % of total data
     trainOn = trainOnArray(i);
     testResults  = zeros(100,5);
     trainResults = zeros(100,5);
-    for n = 1:100
+    for n = 1:500
         P = randperm(sum(numMovies));
         Xtrain = X(P(1:round(trainOn*sum(numMovies))),:);
         Ytrain = Y(P(1:round(trainOn*sum(numMovies))),:);
-        Xtest  = X(P(1+round(trainOn*sum(numMovies)):end),:);
-        Ytest  = Y(P(1+round(trainOn*sum(numMovies)):end),:);
-        model  = fitcsvm(Xtrain,Ytrain, 'KernelFunction', 'linear', 'BoxConstraint', 1000);
+        Xtest  = X(P(1+round(0.9*sum(numMovies)):end),:);
+        Ytest  = Y(P(1+round(0.9*sum(numMovies)):end),:);
+        model  = fitcsvm(Xtrain,Ytrain, 'KernelFunction', 'linear');
     %     model  = fitcsvm(Xtrain,Ytrain, 'KernelFunction', 'polynomial', ...
     %         'PolynomialOrder', 3);
         Y_hat  = predict(model, Xtest);

@@ -15,19 +15,24 @@
 
 directoryName = 'movie_pictures/';
 for j = 1:k
-    figure;
+    figure('Position', [100, 100, 800, 800]);
     currentCounter = 1;
     numCat = sum((idx == j));
     spDim = ceil(sqrt(numCat));
+    ha = tight_subplot(spDim, ceil(numCat/spDim), [0.05, 0.02], [0.03, 0.03], 0.02);
     for i = 1:numCat
         while(idx(currentCounter) ~= j)
             currentCounter = currentCounter + 1;
         end
         imgName = (strcat(directoryName, cellstr(movieNames(currentCounter)),'.png'));
         img = imread(imgName{1});
-        subplot(spDim, spDim, i);
+        axes(ha(i));
         imshow(img);
-        title(movieNames{currentCounter}(1:min(length(movieNames{currentCounter}),20)));
+        title(movieNames{currentCounter}(1:min(length(movieNames{currentCounter}),15)),'FontSize', 10);
         currentCounter = currentCounter + 1;
     end
+    for i = numCat+1:spDim*ceil(numCat/spDim)
+        delete(ha(i));
+    end
+%     print('-dpng', sprintf('kMeans_results/229MoviesK7Num%d.png',j));
 end
