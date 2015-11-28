@@ -75,5 +75,5 @@ end
 P = randperm(sum(numMovies));
 trainMatrix = X(P(1:round(trainOn*sum(numMovies))),:);
 trainLabels = labels(P(1:round(trainOn*sum(numMovies))),:);
-testMatrix  = X(P(round(trainOn*sum(numMovies)))+1:end,:);
-testLabels  = labels(P(round(trainOn*sum(numMovies)))+1:end,:);
+testMatrix  = X(P(round(trainOn*sum(numMovies))+1:end),:);
+testLabels  = labels(P(round(trainOn*sum(numMovies))+1:end),:);
