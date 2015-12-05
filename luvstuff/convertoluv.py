@@ -1,14 +1,26 @@
 from skimage import data
 from skimage.color import rgb2luv
 from numpy import linalg as LA
+import numpy as np
 import glob, os
+import matplotlib.pyplot as plt
+import scipy.stats as stats
+import pylab as pl
+import six
+from matplotlib import colors
 
 os.chdir("../movie_categories/")
 categories = ['action','animation','everything_else','horror','romance']
+colors_array = ['blue','yellow','black','green','red']
+# colors_array = list(six.iteritems(colors.cnames))
+color_index = 0
 for c in categories:
 	print c
+	category_sum = 0
+	category_count = 0
+	
+	x_values = []
 	for file_name in glob.glob("../movie_categories/" + c + "/*.txt"):
-		print(file_name.rsplit('/',1)[-1])
 		f = open(file_name)
 		prev = [0.,0.,0.]
 		count = 0
@@ -24,14 +36,30 @@ for c in categories:
 			diff = LA.norm(luv_vec-prev)
 			temp_sum += diff
 			prev = luv_vec
-		print "fuck: ", count, temp_sum
-		avg_change = temp_sum / count
-		print "bye", avg_change
-		avg_change = str(avg_change)
 
+		avg_change = temp_sum / count
+		x_values.append(avg_change)
+		category_count += 1
+		category_sum += avg_change
+
+		#### writing output to file here
+		avg_change = str(avg_change)
 		concat_name = file_name.rsplit('/',1)[-1]
-		print concat_name, avg_change
 		output = open('../movie_dynamics/'+ c + "/" + concat_name  , 'w')
-		print output
 		output.write(avg_change)
 		output.close()
+		
+	x_values = sorted(x_values)
+	fit = stats.norm.pdf(x_values, np.mean(x_values), np.std(x_values))
+	print colors_array[color_index]
+	print color_index, "befr"
+	
+	print color_index, "aft"
+	print c, category_sum/ category_count
+	plt.plot(x_values,fit,'-o',c=colors_array[color_index],label = c)
+	color_index += 1
+	# plt.scatter(x_values, np.zeros_like(x_values) + 0 , alpha=0.5)
+	# plt.hist(x_values,normed=True) 
+	
+plt.legend()
+plt.show()
