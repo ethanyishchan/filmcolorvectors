@@ -14,21 +14,30 @@
 
 %% Script Parameters
 trainOn    = 0.9; %We will train the NB model on 90% of data, and test on 10%
-class1Dirs = {'movie_categories/horror'};
-class2Dirs = {'movie_categories/action'; 'movie_categories/animation'; ...
-    'movie_categories/everything_else'; 'movie_categories/romance'};
+numClass   = 4;
+class1Dirs = {'horror'};
+% class2Dirs = {'movie_categories/action'; 'movie_categories/animation'; ...
+%     'movie_categories/everything_else'; 'movie_categories/romance'};
+class2Dirs = {'animation'};
+class3Dirs = {'romance'};
+class4Dirs = {'action'};
+
 baseDir    = pwd;
 
 %% Counting the number of datapoints available
-numMovies = zeros(2, 1);
-for class = 1:2
+numMovies = zeros(numClass, 1);
+for class = 1:numClass
     if (class == 1)
         dataDirs = class1Dirs;
     elseif (class == 2)
         dataDirs = class2Dirs;
+    elseif (class == 3)
+        dataDirs = class3Dirs;
+    elseif (class == 4)
+        dataDirs = class4Dirs;
     end
     for d = 1:size(dataDirs, 1)
-        cd(dataDirs{d});
+        cd(['movie_categories/' dataDirs{d}]);
         D = dir();
         for i = 1:length(D)
             if (length(D(i).name) >= 4) && strcmpi(D(i).name(end-3:end),...
@@ -43,18 +52,22 @@ end
 %% Loading raw data into matlab, creating new feature vector
 k = size(C, 1);
 movieNames = cell(sum(numMovies), 1);
-X = zeros(sum(numMovies), k);
+X = zeros(sum(numMovies), k+1);
 labels = zeros(sum(numMovies), 1);
 
 movNum = 1;
-for class = 1:2;
+for class = 1:numClass;
     if (class == 1)
         dataDirs = class1Dirs;
     elseif (class == 2)
         dataDirs = class2Dirs;
+    elseif (class == 3)
+        dataDirs = class3Dirs;
+    elseif (class == 4)
+        dataDirs = class4Dirs;
     end
     for d = 1:size(dataDirs, 1)
-        cd(dataDirs{d});
+        cd(['movie_categories/' dataDirs{d}]);
         D = dir();
         for i = 1:length(D)
             if (length(D(i).name) >= 4) && strcmpi(D(i).name(end-3:end), '.txt')
@@ -62,8 +75,9 @@ for class = 1:2;
                 movieNames(movNum) = cellstr(movName);
                 featVect = load(D(i).name);
                 idx = knnsearch(C, featVect);
-                X(movNum, :) = histcounts(idx, k);
-                labels(movNum) = (class == 1);
+                X(movNum, 1:k) = histcounts(idx, k);
+                X(movNum, k+1) = round(load([baseDir '/movie_dynamics/' dataDirs{d} '/' D(i).name]));
+                labels(movNum) = (class);
                 movNum = movNum + 1;
             end
         end
@@ -71,9 +85,4 @@ for class = 1:2;
     end
 end
 
-%% Select random permutation of movies to form test set and training set
-P = randperm(sum(numMovies));
-trainMatrix = X(P(1:round(trainOn*sum(numMovies))),:);
-trainLabels = labels(P(1:round(trainOn*sum(numMovies))),:);
-testMatrix  = X(P(round(trainOn*sum(numMovies))+1:end),:);
-testLabels  = labels(P(round(trainOn*sum(numMovies))+1:end),:);
+

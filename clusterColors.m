@@ -6,10 +6,11 @@
 % Created: November 26th 2015
 
 %% Script Parameters
-k = 64;
+k = 32;
 dataDirs = {'movie_categories/horror'; 'movie_categories/action'; ...
-    'movie_categories/animation'; 'movie_categories/everything_else'; ...
+    'movie_categories/animation';  ...
     'movie_categories/romance'};
+% dataDirs = {'movie_categories/horror'; 'movie_categories/animation'};
 baseDir  = pwd;
 %% Counting the number of datapoints available
 numMovies   = 0;
