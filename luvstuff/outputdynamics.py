@@ -10,12 +10,12 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 import pylab as pl
 import six
-from matplotlib import colors
-import seaborn as sns
+# from matplotlib import colors
+# import seaborn as sns
 
 os.chdir("../movie_categories/")
-categories = ['action','animation','everything_else','horror','romance']
-colors_array = ['blue','yellow','black','green','red']
+categories = ['action','animation','horror','romance']
+colors_array = ['blue','yellow','green','red']
 # colors_array = list(six.iteritems(colors.cnames))
 color_index = 0
 for c in categories:
