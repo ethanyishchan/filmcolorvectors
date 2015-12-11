@@ -84,5 +84,3 @@ for class = 1:numClass;
         cd(baseDir);
     end
 end
-
-
