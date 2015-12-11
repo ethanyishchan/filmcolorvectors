@@ -13,7 +13,7 @@ P       = randperm(sum(numMovies));
 
 recall = zeros(numClass, 10);
 precision = zeros(numClass, 10);
-
+% tic;
 for j = 1:10
     P       = [P(1+round(0.9*sum(numMovies)):end) P(1:round(trainOn*sum(numMovies)))];
     Xtrain  = X(P(1:round(trainOn*sum(numMovies))),:);
@@ -48,10 +48,18 @@ for j = 1:10
     end
 
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Is this the way that we want to deal with NaN's? %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 recall(isnan(recall)) = 0;
 precision(isnan(precision)) = 0;
 recall_F = mean(recall, 2);
 precision_F = mean(precision, 2);
+
+% disp(recall_F);
+% disp(precision_F);
+% toc;
+% beep
 
 % for i = 1:50
 %     for n = 1:500

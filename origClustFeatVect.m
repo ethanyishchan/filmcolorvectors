@@ -1,27 +1,19 @@
-% spamLikeFeatVect.m - This script creates a new feature vector that counds the
-%                      number of times a certain color appears in the movie, and
-%                      tabulates it in a matrix. 
+% originalFeatVect.m - This script creates an interpolated feature vector 
 %
 %                      Corresponding movie names stored in variable movieNames
 %
-%                      Note: Script assumes clusterColors was run before this,
-%                      that is, variable 'C' (centroid locations) is loaded in
-%                      workspace.
 % CS229 Final Project
-% Ethan Chan, Rajashi Roy, John Lee
+% Ethan Chan, Rajarshi Roy, John Lee
 % {ethancys,rroy,johnwlee}@stanford.edu
-% Created: November 27th 2015
+% Created: December 7th 2015
 
 %% Script Parameters
 trainOn    = 0.9; %We will train the NB model on 90% of data, and test on 10%
 numClass   = 4;
 class1Dirs = {'horror'};
-% class2Dirs = {'movie_categories/action'; 'movie_categories/animation'; ...
-%     'movie_categories/everything_else'; 'movie_categories/romance'};
 class2Dirs = {'animation'};
 class3Dirs = {'romance'};
 class4Dirs = {'action'};
-
 baseDir    = pwd;
 
 %% Counting the number of datapoints available
@@ -50,10 +42,9 @@ for class = 1:numClass
 end
 
 %% Loading raw data into matlab, creating new feature vector
-k = size(C, 1);
+k = size(C, 1); % What feature length to extrapolate color vector to
 movieNames = cell(sum(numMovies), 1);
-% X = zeros(sum(numMovies), k+1);
-X = zeros(sum(numMovies), k);
+X = zeros(sum(numMovies), k*3);
 labels = zeros(sum(numMovies), 1);
 
 movNum = 1;
@@ -74,10 +65,12 @@ for class = 1:numClass;
             if (length(D(i).name) >= 4) && strcmpi(D(i).name(end-3:end), '.txt')
                 movName = D(i).name(1:end-4);
                 movieNames(movNum) = cellstr(movName);
-                featVect = load(D(i).name);
-                idx = knnsearch(C, featVect);
-                X(movNum, 1:k) = histcounts(idx, k);
-                % X(movNum, k+1) = round(load([baseDir '/movie_dynamics/' dataDirs{d} '/' D(i).name]));
+                featVect = load(D(i).name); % Unextrapolated feature vector
+                featVectStdLen = resample(featVect, k, length(featVect)); % Extrapolate
+                featVectStdLen = max(featVectStdLen,0);   % Clamp
+                featVectStdLen = min(featVectStdLen,256); % Clamp
+                idx = knnsearch(C, featVectStdLen);
+                X(movNum, 1:k) = idx; %Columnize
                 labels(movNum) = (class);
                 movNum = movNum + 1;
             end
@@ -85,3 +78,5 @@ for class = 1:numClass;
         cd(baseDir);
     end
 end
+
+
