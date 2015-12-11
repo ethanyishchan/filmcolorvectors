@@ -17,3 +17,7 @@ for r = 1:100
 	FP_A(:,r) = FP_F;
 	FN_A(:,r) = FN_F;
 end
+
+TP_F = mean(TP_A, 2);
+FP_F = mean(FP_F, 2);
+FN_F = mean(FN_F, 2);
