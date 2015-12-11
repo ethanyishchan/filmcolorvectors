@@ -42,7 +42,7 @@ for class = 1:numClass
 end
 
 %% Loading raw data into matlab, creating new feature vector
-k = 256; % What feature length to extrapolate color vector to
+k = 512; % What feature length to extrapolate color vector to
 movieNames = cell(sum(numMovies), 1);
 X = zeros(sum(numMovies), k*3);
 labels = zeros(sum(numMovies), 1);

@@ -1,22 +1,21 @@
-% svmOnSpamLikeFeatVect.m - Builds and tests a SVM classifier on the spam 
-%                           like feature vector. Assumes spamLikeFeatVect.m
-%							was run immediately before this.
+% BoxConstraint
 %
 % CS229 Final Project
 % Ethan Chan, Rajashi Roy, John Lee
 % {ethancys,rroy,johnwlee}@stanford.edu
-% Created: December 5th 2015
+% Created: December 13th 2015
+
+load('2015_12_10_Centroid_512.mat');
+CHWDFeatVect;
 
 Y       = labels;
 
 P       = randperm(sum(numMovies));
 
-recall = zeros(numClass, 10);
-precision = zeros(numClass, 10);
-TP = zeros(numClass, 10);
-FP = zeros(numClass, 10);
-FN = zeros(numClass, 10);
 tic;
+
+c_array = logspace(0,3);
+for k = 1:length(c_array);
 for j = 1:10
     P       = [P(1+round(0.9*sum(numMovies)):end) P(1:round(trainOn*sum(numMovies)))];
     Xtrain  = X(P(1:round(trainOn*sum(numMovies))),:);
@@ -45,29 +44,15 @@ for j = 1:10
     [~, Y_hat_fin] = max(S_hat, [], 2);
     [~, Y_ep_fin] = max(S_ep, [], 2);
 
-    for i = 1:numClass
-        TP(i, j)        = sum((Ytest == i).*(Ytest == Y_hat_fin));
-        FP(i, j)        = sum((Y_hat_fin == i).*(Ytest ~= Y_hat_fin));
-        FN(i, j)        = sum((Ytest == i).*(Ytest ~= Y_hat_fin));
-        recall(i, j)    = sum((Ytest == i).*(Ytest == Y_hat_fin))/sum(Ytest == i);
-        precision(i, j) = sum((Ytest == i).*(Ytest == Y_hat_fin))/sum(Y_hat_fin == i);
-    end
+    genEr(j) = 1-sum(Ytest  == Y_hat_fin)/length(Ytest);
+    trnEr(j) = 1-sum(Ytrain == Y_ep_fin)/length(Ytrain);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Is this the way that we want to deal with NaN's? %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-recall(isnan(recall)) = 0;
-precision(isnan(precision)) = 0;
-recall_F = mean(recall, 2);
-precision_F = mean(precision, 2);
-TP_F = mean(TP, 2);
-FP_F = mean(FP, 2);
-FN_F = mean(FN, 2);
 
-% disp(TP)
-% disp(recall_F);
-% disp(precision_F);
+
 toc;
 % beep
 

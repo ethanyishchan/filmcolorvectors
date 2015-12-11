@@ -52,8 +52,8 @@ end
 %% Loading raw data into matlab, creating new feature vector
 k = size(C, 1);
 movieNames = cell(sum(numMovies), 1);
-X = zeros(sum(numMovies), k+1);
-% X = zeros(sum(numMovies), k);
+% X = zeros(sum(numMovies), k+1);
+X = zeros(sum(numMovies), k);
 labels = zeros(sum(numMovies), 1);
 
 movNum = 1;
@@ -77,7 +77,7 @@ for class = 1:numClass;
                 featVect = load(D(i).name);
                 idx = knnsearch(C, featVect);
                 X(movNum, 1:k) = histcounts(idx, k);
-                X(movNum, k+1) = round(load([baseDir '/movie_dynamics/' dataDirs{d} '/' D(i).name]));
+                % X(movNum, k+1) = round(load([baseDir '/movie_dynamics/' dataDirs{d} '/' D(i).name]));
                 labels(movNum) = (class);
                 movNum = movNum + 1;
             end
